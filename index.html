@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ascendia | 太陽光売電事業</title>
-  <meta name="description" content="Ascendiaは、持続可能なエネルギーの循環を通じて、社会の成長を加速させる太陽光売電事業を展開しています。" />
+  <title>Ascendia | SNSマーケティング・グルメ観光プロモーション</title>
+  <meta name="description" content="Ascendiaは、飲食店・ホテル・観光地の魅力を写真と動画で切り取り、SNSを通じて「行きたい」をつくるSNSマーケティング・グルメ観光プロモーション事業を展開しています。" />
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -99,6 +99,87 @@
       transform: translateY(0);
     }
 
+    /* ===== ヒーロー スライドショー ===== */
+    .hero-slide {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      transform: scale(1.12);
+      transition: opacity 1.8s ease;
+    }
+    .hero-slide.active {
+      opacity: 1;
+      animation: kenburns 8s ease-out forwards;
+    }
+    @keyframes kenburns {
+      from { transform: scale(1.12); }
+      to   { transform: scale(1); }
+    }
+
+    /* ===== ヒーロー 文字の順番表示 ===== */
+    .hero-in {
+      opacity: 0;
+      animation: fadeInUp 0.9s ease-out forwards;
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== 写真ストリップ（横に流れる） ===== */
+    .marquee-track {
+      display: flex;
+      gap: 1.25rem;
+      width: max-content;
+      animation: marquee 45s linear infinite;
+    }
+    .marquee:hover .marquee-track {
+      animation-play-state: paused;
+    }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* ===== 事業カード 画像ズーム ===== */
+    .biz-card img {
+      transition: transform 0.8s ease;
+    }
+    .biz-card:hover img {
+      transform: scale(1.08);
+    }
+
+    /* ===== 順番に表示（stagger） ===== */
+    .reveal[data-delay="1"] { transition-delay: 0.1s; }
+    .reveal[data-delay="2"] { transition-delay: 0.2s; }
+    .reveal[data-delay="3"] { transition-delay: 0.3s; }
+    .reveal[data-delay="4"] { transition-delay: 0.4s; }
+
+    /* ===== 動きを減らす設定の人には止める ===== */
+    @media (prefers-reduced-motion: reduce) {
+      .hero-slide, .hero-slide.active { animation: none; transform: none; transition: none; }
+      .hero-in { animation: none; opacity: 1; }
+      .marquee-track { animation: none; }
+      .reveal { opacity: 1; transform: none; transition: none; }
+      .biz-card img { transition: none; }
+    }
+
+    /* ===== ナビ：ヒーローの上では白文字 ===== */
+    #navbar:not(.scrolled) #logo-text,
+    #navbar:not(.scrolled) .nav-link,
+    #navbar:not(.scrolled) #menu-btn {
+      color: #fff;
+    }
+    #navbar:not(.scrolled) .nav-link:hover {
+      color: #fbbf24;
+      background: rgba(255, 255, 255, 0.1);
+    }
+    #navbar:not(.scrolled) #menu-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
     /* ===== モバイルメニュー ===== */
     #mobile-menu {
       display: none;
@@ -125,10 +206,10 @@
 
       <!-- デスクトップメニュー -->
       <div class="hidden md:flex items-center gap-1">
-        <a href="#about"    class="text-slate-700 hover:text-amber-500 transition-colors font-medium px-4 py-2 rounded-lg hover:bg-amber-50">Concept</a>
-        <a href="#business" class="text-slate-700 hover:text-amber-500 transition-colors font-medium px-4 py-2 rounded-lg hover:bg-amber-50">Business</a>
-        <a href="#message"  class="text-slate-700 hover:text-amber-500 transition-colors font-medium px-4 py-2 rounded-lg hover:bg-amber-50">Message</a>
-        <a href="#info"     class="text-slate-700 hover:text-amber-500 transition-colors font-medium px-4 py-2 rounded-lg hover:bg-amber-50">Company</a>
+        <a href="#about"    class="nav-link text-slate-700 hover:text-amber-500 transition-colors font-medium px-4 py-2 rounded-lg hover:bg-amber-50">Concept</a>
+        <a href="#business" class="nav-link text-slate-700 hover:text-amber-500 transition-colors font-medium px-4 py-2 rounded-lg hover:bg-amber-50">Business</a>
+        <a href="#message"  class="nav-link text-slate-700 hover:text-amber-500 transition-colors font-medium px-4 py-2 rounded-lg hover:bg-amber-50">Message</a>
+        <a href="#info"     class="nav-link text-slate-700 hover:text-amber-500 transition-colors font-medium px-4 py-2 rounded-lg hover:bg-amber-50">Company</a>
       </div>
 
       <!-- モバイルメニューボタン -->
@@ -148,35 +229,44 @@
   </nav>
 
   <!-- ========== ヒーローセクション ========== -->
-  <section class="relative h-screen flex items-center justify-center overflow-hidden bg-slate-900">
-    <!-- 背景グロー -->
-    <div class="hero-glow-amber"></div>
-    <div class="hero-glow-blue"></div>
+  <section class="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden bg-slate-900">
+    <!-- 背景スライドショー -->
+    <div class="absolute inset-0" aria-hidden="true">
+      <div class="hero-slide active" style="background-image: url('images/hero-dining.jpg');"></div>
+      <div class="hero-slide" style="background-image: url('images/hero-kyoto.jpg');"></div>
+      <div class="hero-slide" style="background-image: url('images/hero-resort.jpg');"></div>
+    </div>
+    <!-- 文字を読みやすくする暗幕 -->
+    <div class="absolute inset-0 bg-gradient-to-b from-slate-900/70 via-slate-900/50 to-slate-900/80"></div>
+    <div class="hero-glow-amber" style="opacity: 0.18;"></div>
 
     <!-- コンテンツ -->
     <div class="relative z-10 max-w-7xl mx-auto px-6 text-center">
-      <p class="text-amber-400 font-bold tracking-widest mb-5 uppercase text-sm">Empowering the Future</p>
-      <h1 class="text-5xl md:text-8xl font-black text-white mb-8 tracking-tight leading-tight">
-        陽とともに、<br />
+      <p class="hero-in text-amber-400 font-bold tracking-widest mb-5 uppercase text-sm" style="animation-delay: 0.2s;">SNS Marketing &amp; Gourmet Tourism</p>
+      <h1 class="hero-in text-5xl md:text-8xl font-black text-white mb-8 tracking-tight leading-tight" style="animation-delay: 0.4s;">
+        その一枚が、<br />
         <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-200">
-          次なるステージへ。
+          次の旅になる。
         </span>
       </h1>
-      <p class="text-slate-300 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
-        Ascendiaは、持続可能なエネルギーの循環を通じて、<br class="hidden md:block" />
-        社会の成長を加速させる太陽光売電事業を展開しています。
+      <p class="hero-in text-slate-200 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed" style="animation-delay: 0.7s;">
+        Ascendiaは、飲食店・ホテル・観光地の魅力を写真と動画で切り取り、<br class="hidden md:block" />SNSを通じて「行ってみたい」を届けるプロモーションを行っています。
       </p>
-      <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a href="#about"
+      <div class="hero-in flex flex-col sm:flex-row gap-4 justify-center" style="animation-delay: 1s;">
+        <a href="#business"
            class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-full transition-all shadow-lg shadow-amber-500/30 group">
-          コンセプトを見る
+          事業内容を見る
           <i data-lucide="arrow-up-right" class="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"></i>
+        </a>
+        <a href="#about"
+           class="inline-flex items-center justify-center gap-2 px-8 py-4 border border-white/40 hover:bg-white/10 text-white font-bold rounded-full transition-all">
+          コンセプトを見る
         </a>
       </div>
     </div>
 
     <!-- スクロールインジケーター -->
-    <div class="absolute bottom-10 left-1/2 -translate-x-1/2">
+    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 z-10">
       <div class="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center pt-2">
         <div class="w-1 h-2 bg-white/70 rounded-full scroll-dot"></div>
       </div>
@@ -199,13 +289,10 @@
             場所や次元を意味する接尾語を組み合わせています。
           </p>
           <p>
-            太陽の光が昇るたびに、新たな可能性が生まれる。私たちはそのクリーンなエネルギーを
-            ビジネスに変え、地域社会やパートナー企業とともに、より高いステージへと
-            歩みを進めることを使命としています。
+            一皿の料理、ひとつの客室、ひとつの景色。その魅力が正しく伝われば、人は動き出します。私たちは写真・動画とSNSの力で、飲食店や宿泊施設、地域が持つ本来の魅力を届け、パートナーとともにより高いステージへと歩みを進めることを使命としています。
           </p>
           <p>
-            安定したエネルギー供給は、明日の社会の基盤です。誠実さと透明性を持って、
-            次世代に誇れる価値を築き上げます。
+            「見た」で終わらせず、「行きたい」「また来たい」へ。誠実でリアルな発信を積み重ね、選ばれ続けるお店とまちを育てます。
           </p>
         </div>
       </div>
@@ -215,37 +302,57 @@
 
         <div class="p-8 bg-slate-50 rounded-2xl card-hover reveal">
           <div class="text-amber-500 mb-4">
-            <i data-lucide="zap" class="w-8 h-8"></i>
+            <i data-lucide="camera" class="w-8 h-8"></i>
           </div>
-          <h3 class="text-xl font-bold mb-3">Efficient</h3>
+          <h3 class="text-xl font-bold mb-3">Real</h3>
           <p class="text-slate-600 leading-relaxed">
-            最新の技術と知見を活用し、最大効率の売電モデルを構築します。
+            実際に足を運び、撮影・取材を重ねて、その場の空気まで伝わるコンテンツをつくります。
           </p>
         </div>
 
-        <div class="p-8 bg-slate-50 rounded-2xl card-hover reveal">
+        <div class="p-8 bg-slate-50 rounded-2xl card-hover reveal" data-delay="1">
           <div class="text-amber-500 mb-4">
-            <i data-lucide="shield" class="w-8 h-8"></i>
+            <i data-lucide="megaphone" class="w-8 h-8"></i>
           </div>
-          <h3 class="text-xl font-bold mb-3">Reliable</h3>
+          <h3 class="text-xl font-bold mb-3">Reach</h3>
           <p class="text-slate-600 leading-relaxed">
-            長期にわたる安定運用のために、徹底したリスク管理と
-            メンテナンスを重視します。
+            SNSごとの特性を活かした企画と運用で、届けたい人に魅力を届けます。
           </p>
         </div>
 
-        <div class="p-8 bg-slate-50 rounded-2xl card-hover reveal">
+        <div class="p-8 bg-slate-50 rounded-2xl card-hover reveal" data-delay="2">
           <div class="text-amber-500 mb-4">
-            <i data-lucide="globe" class="w-8 h-8"></i>
+            <i data-lucide="map-pin" class="w-8 h-8"></i>
           </div>
-          <h3 class="text-xl font-bold mb-3">Sustainable</h3>
+          <h3 class="text-xl font-bold mb-3">Local</h3>
           <p class="text-slate-600 leading-relaxed">
-            地球環境に配慮したビジネスこそが、これからの経済を
-            支えると確信しています。
+            お店・施設・地域とともに、来店・予約・観光につながる発信を目指します。
           </p>
         </div>
 
       </div>
+    </div>
+  </section>
+
+  <!-- ========== 写真ストリップ（横に流れる） ========== -->
+  <section class="marquee py-10 bg-white overflow-hidden" aria-label="発信イメージ">
+    <div class="marquee-track">
+      <img src="images/strip-fuji.jpg" alt="桜と富士山" loading="lazy" class="w-64 md:w-80 aspect-[4/3] object-cover rounded-2xl shrink-0" />
+      <img src="images/biz-gourmet.jpg" alt="テーブルに並ぶ料理" loading="lazy" class="w-64 md:w-80 aspect-[4/3] object-cover rounded-2xl shrink-0" />
+      <img src="images/strip-spa.jpg" alt="スパのタオルとアメニティ" loading="lazy" class="w-64 md:w-80 aspect-[4/3] object-cover rounded-2xl shrink-0" />
+      <img src="images/hero-kyoto.jpg" alt="京都の石畳の街並み" loading="lazy" class="w-64 md:w-80 aspect-[4/3] object-cover rounded-2xl shrink-0" />
+      <img src="images/strip-terrace.jpg" alt="海辺のテラスレストラン" loading="lazy" class="w-64 md:w-80 aspect-[4/3] object-cover rounded-2xl shrink-0" />
+      <img src="images/biz-hotel.jpg" alt="朝日が差し込むホテルの客室" loading="lazy" class="w-64 md:w-80 aspect-[4/3] object-cover rounded-2xl shrink-0" />
+      <img src="images/strip-restaurant.jpg" alt="レストランの店内" loading="lazy" class="w-64 md:w-80 aspect-[4/3] object-cover rounded-2xl shrink-0" />
+      <img src="images/biz-content.jpg" alt="木の板に盛られた寿司" loading="lazy" class="w-64 md:w-80 aspect-[4/3] object-cover rounded-2xl shrink-0" />
+      <img src="images/strip-fuji.jpg" alt="桜と富士山" aria-hidden="true" loading="lazy" class="w-64 md:w-80 aspect-[4/3] object-cover rounded-2xl shrink-0" />
+      <img src="images/biz-gourmet.jpg" alt="テーブルに並ぶ料理" aria-hidden="true" loading="lazy" class="w-64 md:w-80 aspect-[4/3] object-cover rounded-2xl shrink-0" />
+      <img src="images/strip-spa.jpg" alt="スパのタオルとアメニティ" aria-hidden="true" loading="lazy" class="w-64 md:w-80 aspect-[4/3] object-cover rounded-2xl shrink-0" />
+      <img src="images/hero-kyoto.jpg" alt="京都の石畳の街並み" aria-hidden="true" loading="lazy" class="w-64 md:w-80 aspect-[4/3] object-cover rounded-2xl shrink-0" />
+      <img src="images/strip-terrace.jpg" alt="海辺のテラスレストラン" aria-hidden="true" loading="lazy" class="w-64 md:w-80 aspect-[4/3] object-cover rounded-2xl shrink-0" />
+      <img src="images/biz-hotel.jpg" alt="朝日が差し込むホテルの客室" aria-hidden="true" loading="lazy" class="w-64 md:w-80 aspect-[4/3] object-cover rounded-2xl shrink-0" />
+      <img src="images/strip-restaurant.jpg" alt="レストランの店内" aria-hidden="true" loading="lazy" class="w-64 md:w-80 aspect-[4/3] object-cover rounded-2xl shrink-0" />
+      <img src="images/biz-content.jpg" alt="木の板に盛られた寿司" aria-hidden="true" loading="lazy" class="w-64 md:w-80 aspect-[4/3] object-cover rounded-2xl shrink-0" />
     </div>
   </section>
 
@@ -261,57 +368,87 @@
       <!-- 見出し -->
       <div class="text-center mb-20 reveal">
         <span class="text-amber-400 font-bold text-sm tracking-widest uppercase mb-4 block">Our Business</span>
-        <h2 class="text-4xl md:text-5xl font-bold">事業内容</h2>
+        <h2 class="text-4xl md:text-5xl font-bold mb-6">事業内容</h2>
+        <p class="text-amber-200 font-bold text-lg md:text-xl">SNSマーケティング・グルメ観光プロモーション事業</p>
       </div>
 
-      <div class="grid md:grid-cols-2 gap-12 items-center">
+      <div class="flex flex-wrap justify-center gap-8">
 
-        <!-- ビジュアルパネル -->
-        <div class="relative rounded-3xl overflow-hidden aspect-video shadow-2xl bg-slate-800 reveal">
-          <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent z-10"></div>
-          <div class="absolute inset-0 flex items-center justify-center z-20">
-            <div class="text-center">
-              <i data-lucide="sun" class="w-16 h-16 text-amber-400 mx-auto mb-4" style="animation: pulse 3s ease-in-out infinite;"></i>
-              <p class="font-bold text-xl tracking-wide">Solar Energy Solution</p>
-            </div>
+        <article class="biz-card group w-full md:w-[calc(50%-1rem)] lg:w-[calc((100%-4rem)/3)] bg-slate-800/60 border border-white/5 rounded-3xl overflow-hidden reveal" data-delay="0">
+          <div class="relative aspect-[4/3] overflow-hidden">
+            <img src="images/biz-gourmet.jpg" alt="テーブルに並ぶ料理" loading="lazy" class="w-full h-full object-cover" />
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/70 to-transparent"></div>
+            <div class="absolute top-4 left-4 w-10 h-10 bg-amber-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">01</div>
+            <i data-lucide="utensils" class="absolute bottom-4 right-4 w-7 h-7 text-amber-300"></i>
           </div>
-          <!-- グリッドパターン装飾 -->
-          <div class="absolute inset-0 opacity-10"
-               style="background-image: repeating-linear-gradient(0deg, #f59e0b 0, #f59e0b 1px, transparent 1px, transparent 40px),
-                                        repeating-linear-gradient(90deg, #f59e0b 0, #f59e0b 1px, transparent 1px, transparent 40px);">
-          </div>
-        </div>
-
-        <!-- テキストエリア -->
-        <div class="space-y-12 reveal">
-
-          <div>
-            <h3 class="text-2xl font-bold mb-4 flex items-center gap-3">
-              <div class="w-10 h-10 bg-amber-500 rounded-lg flex items-center justify-center text-white font-bold text-sm shrink-0">
-                01
-              </div>
-              太陽光発電所の運営・売電
-            </h3>
-            <p class="text-slate-400 text-lg leading-relaxed">
-              広大な用地を有効活用し、大規模な太陽光発電システムを構築・運営。
-              固定価格買取制度（FIT）を活用し、安定した電力供給と収益化を実現しています。
+          <div class="p-7">
+            <h3 class="text-xl font-bold mb-3">飲食店・グルメ情報のSNS発信</h3>
+            <p class="text-slate-400 leading-relaxed">
+              InstagramなどのSNSを活用し、飲食店の料理や店舗の雰囲気、スタッフの想いなどを写真・動画で発信します。実際に訪れたくなる魅力的なコンテンツを制作し、認知度向上や来店促進につなげます。
             </p>
           </div>
+        </article>
 
-          <div>
-            <h3 class="text-2xl font-bold mb-4 flex items-center gap-3">
-              <div class="w-10 h-10 bg-amber-500 rounded-lg flex items-center justify-center text-white font-bold text-sm shrink-0">
-                02
-              </div>
-              資産価値の最大化と保守
-            </h3>
-            <p class="text-slate-400 text-lg leading-relaxed">
-              発電効率を維持するための高度なモニタリングと定期メンテナンスを実施。
-              20年、30年と続く事業として、設備の健全性を守り続けます。
+        <article class="biz-card group w-full md:w-[calc(50%-1rem)] lg:w-[calc((100%-4rem)/3)] bg-slate-800/60 border border-white/5 rounded-3xl overflow-hidden reveal" data-delay="1">
+          <div class="relative aspect-[4/3] overflow-hidden">
+            <img src="images/biz-hotel.jpg" alt="朝日が差し込むホテルの客室" loading="lazy" class="w-full h-full object-cover" />
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/70 to-transparent"></div>
+            <div class="absolute top-4 left-4 w-10 h-10 bg-amber-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">02</div>
+            <i data-lucide="bed-double" class="absolute bottom-4 right-4 w-7 h-7 text-amber-300"></i>
+          </div>
+          <div class="p-7">
+            <h3 class="text-xl font-bold mb-3">ホテル・宿泊施設のSNSプロモーション</h3>
+            <p class="text-slate-400 leading-relaxed">
+              ホテル、旅館、温泉施設などの客室、料理、館内設備、周辺観光情報をSNSで発信します。施設の魅力を分かりやすく伝え、予約数の増加や新たな宿泊客の獲得をサポートします。
             </p>
           </div>
+        </article>
 
-        </div>
+        <article class="biz-card group w-full md:w-[calc(50%-1rem)] lg:w-[calc((100%-4rem)/3)] bg-slate-800/60 border border-white/5 rounded-3xl overflow-hidden reveal" data-delay="2">
+          <div class="relative aspect-[4/3] overflow-hidden">
+            <img src="images/biz-region.jpg" alt="五重塔と富士山の風景" loading="lazy" class="w-full h-full object-cover" />
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/70 to-transparent"></div>
+            <div class="absolute top-4 left-4 w-10 h-10 bg-amber-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">03</div>
+            <i data-lucide="map" class="absolute bottom-4 right-4 w-7 h-7 text-amber-300"></i>
+          </div>
+          <div class="p-7">
+            <h3 class="text-xl font-bold mb-3">観光地・自治体の地域PR</h3>
+            <p class="text-slate-400 leading-relaxed">
+              地域の観光スポット、特産品、文化、イベントなどをSNSやWEBで紹介します。地域ならではの体験を発信し、観光客の誘致や地域の認知度向上、選ばれるまちづくりを支援します。
+            </p>
+          </div>
+        </article>
+
+        <article class="biz-card group w-full md:w-[calc(50%-1rem)] lg:w-[calc((100%-4rem)/3)] bg-slate-800/60 border border-white/5 rounded-3xl overflow-hidden reveal" data-delay="0">
+          <div class="relative aspect-[4/3] overflow-hidden">
+            <img src="images/biz-promotion.jpg" alt="スマートフォンを操作するシェフ" loading="lazy" class="w-full h-full object-cover" />
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/70 to-transparent"></div>
+            <div class="absolute top-4 left-4 w-10 h-10 bg-amber-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">04</div>
+            <i data-lucide="trending-up" class="absolute bottom-4 right-4 w-7 h-7 text-amber-300"></i>
+          </div>
+          <div class="p-7">
+            <h3 class="text-xl font-bold mb-3">企業・店舗向け集客支援</h3>
+            <p class="text-slate-400 leading-relaxed">
+              企業や飲食店、観光関連事業者に向けて、SNS運用、投稿企画、キャンペーンなどを提案します。商品の魅力やサービスの特徴を発信し、来店・予約・購入につながる集客をサポートします。
+            </p>
+          </div>
+        </article>
+
+        <article class="biz-card group w-full md:w-[calc(50%-1rem)] lg:w-[calc((100%-4rem)/3)] bg-slate-800/60 border border-white/5 rounded-3xl overflow-hidden reveal" data-delay="1">
+          <div class="relative aspect-[4/3] overflow-hidden">
+            <img src="images/biz-content.jpg" alt="木の板に盛られた寿司" loading="lazy" class="w-full h-full object-cover" />
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/70 to-transparent"></div>
+            <div class="absolute top-4 left-4 w-10 h-10 bg-amber-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">05</div>
+            <i data-lucide="clapperboard" class="absolute bottom-4 right-4 w-7 h-7 text-amber-300"></i>
+          </div>
+          <div class="p-7">
+            <h3 class="text-xl font-bold mb-3">写真・動画コンテンツ制作</h3>
+            <p class="text-slate-400 leading-relaxed">
+              SNSやWEBサイト、広告などに使用する料理、施設、人物、観光地の写真・動画を企画・撮影・編集します。リアルな体験が伝わるコンテンツを制作し、ブランドの魅力をより多くの人へ届けます。
+            </p>
+          </div>
+        </article>
+
       </div>
     </div>
   </section>
@@ -331,8 +468,7 @@
         <div class="text-amber-300 text-8xl font-serif leading-none mb-2 select-none" aria-hidden="true">&ldquo;</div>
 
         <blockquote class="text-xl md:text-2xl text-slate-700 leading-relaxed font-medium mb-12">
-          エネルギーの形を変え、未来の豊かさを支える。Ascendiaは、ただ電力を売るだけでなく、
-          次世代へと続く希望の光を届ける存在でありたいと考えています。
+          一皿の料理にも、ひとつの宿にも、その土地の景色にも、作り手の想いと物語があります。Ascendiaは、その魅力をまっすぐに切り取り、「行ってみたい」と感じる人のもとへ届けます。発信をきっかけに人が訪れ、お店やまちが元気になる。そんな循環を、皆さまとともに生み出していきたいと考えています。
         </blockquote>
 
         <!-- 代表者情報（写真枠なし） -->
@@ -360,8 +496,8 @@
             <span class="text-xl font-bold tracking-tight">Ascendia</span>
           </div>
           <p class="text-slate-500 text-sm leading-relaxed">
-            クリーンエネルギーを通じて、<br />
-            社会の持続可能な発展に寄与する。
+            食と旅の魅力を発信し、<br />
+            人とまちをもっと元気にする。
           </p>
         </div>
 
@@ -376,7 +512,7 @@
 
             <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-12 py-4 border-b border-slate-100">
               <span class="text-slate-400 text-sm font-medium w-28 shrink-0">事業内容</span>
-              <span class="text-slate-800 font-semibold">太陽光売電事業</span>
+              <span class="text-slate-800 font-semibold">SNSマーケティング<br>グルメ観光プロモーション事業</span>
             </div>
 
             <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-12 py-4 border-b border-slate-100">
@@ -424,10 +560,10 @@
 
     window.addEventListener('scroll', () => {
       if (window.scrollY > 50) {
-        navbar.classList.add('bg-white/90', 'backdrop-blur-md', 'shadow-sm', 'py-3');
+        navbar.classList.add('scrolled', 'bg-white/90', 'backdrop-blur-md', 'shadow-sm', 'py-3');
         navbar.classList.remove('py-6');
       } else {
-        navbar.classList.remove('bg-white/90', 'backdrop-blur-md', 'shadow-sm', 'py-3');
+        navbar.classList.remove('scrolled', 'bg-white/90', 'backdrop-blur-md', 'shadow-sm', 'py-3');
         navbar.classList.add('py-6');
       }
     });
@@ -466,6 +602,18 @@
     }, { threshold: 0.15 });
 
     revealEls.forEach(el => observer.observe(el));
+
+    // ===== ヒーロー スライドショー =====
+    const slides = document.querySelectorAll('.hero-slide');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (slides.length > 1 && !reduceMotion) {
+      let current = 0;
+      setInterval(() => {
+        slides[current].classList.remove('active');
+        current = (current + 1) % slides.length;
+        slides[current].classList.add('active');
+      }, 6000);
+    }
   </script>
 
 </body>
